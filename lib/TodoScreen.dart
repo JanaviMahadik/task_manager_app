@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 import 'LoginPage.dart';
 
+class TodoScreen extends StatefulWidget {
+  @override
+  _TodoScreenState createState() => _TodoScreenState();
+}
 
 class Task {
   String title;
   bool completed;
 
   Task({required this.title, this.completed = false});
-}
-class TodoScreen extends StatefulWidget {
-  @override
-  _TodoScreenState createState() => _TodoScreenState();
 }
 
 class _TodoScreenState extends State<TodoScreen> {
@@ -48,10 +48,10 @@ class _TodoScreenState extends State<TodoScreen> {
             ListTile(
               title: Text('Change Account'),
               onTap: () {
-                Navigator.pop(context); // Close the drawer
+                Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()), // Navigate to LoginPage
+                  MaterialPageRoute(builder: (context) => LoginPage()),
                 );
               },
             ),
@@ -121,7 +121,6 @@ class _TodoScreenState extends State<TodoScreen> {
     );
   }
 }
-
 
 class TaskSearchDelegate extends SearchDelegate<Task> {
   final List<Task> tasks;

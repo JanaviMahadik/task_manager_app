@@ -13,6 +13,40 @@ class _LoginPageState extends State<LoginPage> {
   final String correctUsername = 'Janavi';
   final String correctPassword = 'Password@123';
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Login')),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextFormField(
+                controller: usernameController,
+                decoration: InputDecoration(labelText: 'Username'),
+                validator: validateUsername,
+              ),
+              TextFormField(
+                controller: passwordController,
+                decoration: InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: validatePassword,
+              ),
+              SizedBox(height:  16),
+              ElevatedButton(
+                onPressed: signIn,
+                child: Text('Sign In'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   String? validateUsername(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your username';
@@ -89,41 +123,6 @@ class _LoginPageState extends State<LoginPage> {
           ],
         );
       },
-    );
-  }
-  // ... showSuccessDialog and showErrorDialog methods remain unchanged ...
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Login')),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextFormField(
-                controller: usernameController,
-                decoration: InputDecoration(labelText: 'Username'),
-                validator: validateUsername,
-              ),
-              TextFormField(
-                controller: passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
-                obscureText: true,
-                validator: validatePassword,
-              ),
-              SizedBox(height:  16),
-              ElevatedButton(
-                onPressed: signIn,
-                child: Text('Sign In'),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
