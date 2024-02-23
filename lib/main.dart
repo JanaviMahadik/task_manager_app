@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Auto Navigate Example',
+        title: 'Task Manager App',
         initialRoute: '/logo',
         routes: {
           '/': (context) => TodoScreen(),
