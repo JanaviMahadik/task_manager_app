@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,8 +11,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final String correctUsername = 'Janavi';
-  final String correctPassword = 'Password@123';
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
                 obscureText: true,
                 validator: validatePassword,
               ),
-              SizedBox(height:  16),
+              SizedBox(height: 16),
               ElevatedButton(
                 onPressed: signIn,
                 child: Text('Sign In'),
@@ -63,24 +63,26 @@ class _LoginPageState extends State<LoginPage> {
 
   void signIn() async {
     if (_formKey.currentState!.validate()) {
-      String enteredUsername = usernameController.text;
-      String enteredPassword = passwordController.text;
-
-      if (enteredUsername == correctUsername && enteredPassword == correctPassword) {
-        showSuccessDialog(context, enteredUsername);
-      } else {
+      try {
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: usernameController.text,
+          password: passwordController.text,
+        );
+        showSuccessDialog(context, userCredential.user!.email!);
+      } catch (e) {
+        print(e);
         showErrorDialog(context);
       }
     }
   }
 
-  void showSuccessDialog(BuildContext context, String name) {
+  void showSuccessDialog(BuildContext context, String email) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Success'),
-          content: Text('Successfully logged in as $name'),
+          content: Text('Successfully logged in as $email'),
           actions: <Widget>[
             TextButton(
               child: Text('Go to Main Page'),
@@ -104,7 +106,6 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
   }
-
 
   void showErrorDialog(BuildContext context) {
     showDialog(

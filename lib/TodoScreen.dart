@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'LoginPage.dart';
@@ -8,10 +9,11 @@ class TodoScreen extends StatefulWidget {
 }
 
 class Task {
+  String id; // Document ID from Firestore
   String title;
   bool completed;
 
-  Task({required this.title, this.completed = false});
+  Task({this.id = '', required this.title, this.completed = false});
 }
 
 class _TodoScreenState extends State<TodoScreen> {
@@ -66,15 +68,19 @@ class _TodoScreenState extends State<TodoScreen> {
             title: Text(task.title),
             leading: Checkbox(
               value: task.completed,
-              onChanged: (value) {
+              onChanged: (value) async {
                 setState(() {
                   task.completed = value ?? false;
+                });
+                await FirebaseFirestore.instance.collection('tasks').doc(task.id).update({
+                  'completed': task.completed,
                 });
               },
             ),
             trailing: IconButton(
               icon: Icon(Icons.delete),
-              onPressed: () {
+              onPressed: () async {
+                await FirebaseFirestore.instance.collection('tasks').doc(task.id).delete();
                 setState(() {
                   todos.removeAt(index);
                 });
@@ -103,10 +109,17 @@ class _TodoScreenState extends State<TodoScreen> {
                   ),
                   TextButton(
                     child: Text('Add'),
-                    onPressed: () {
-                      setState(() {
-                        todos.add(Task(title: _textEditingController.text));
-                        _textEditingController.clear();
+                    onPressed: () async {
+                      final newTask = Task(title: _textEditingController.text);
+                      await FirebaseFirestore.instance.collection('tasks').add({
+                        'title': newTask.title,
+                        'completed': newTask.completed,
+                      }).then((value) {
+                        newTask.id = value.id;
+                        setState(() {
+                          todos.add(newTask);
+                          _textEditingController.clear();
+                        });
                       });
                       Navigator.of(context).pop();
                     },
@@ -144,7 +157,7 @@ class TaskSearchDelegate extends SearchDelegate<Task> {
     return IconButton(
       icon: Icon(Icons.arrow_back),
       onPressed: () {
-        close(context,Task(title: ''));
+        close(context, Task(title:''));
       },
     );
   }
@@ -163,15 +176,15 @@ class TaskSearchDelegate extends SearchDelegate<Task> {
     }).toList();
 
     return ListView.builder(
-      itemCount: taskSuggestions.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(taskSuggestions[index].title),
-          onTap: () {
-            close(context, taskSuggestions[index]);
-          },
-        );
-      },
+        itemCount: taskSuggestions.length,
+        itemBuilder:(context, index){
+          return ListTile(
+              title : Text(taskSuggestions[index].title),
+              onTap : (){
+                close(context,taskSuggestions[index]);
+              }
+          );
+        }
     );
   }
 }
