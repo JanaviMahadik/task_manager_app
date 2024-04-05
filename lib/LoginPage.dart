@@ -95,12 +95,6 @@ class _LoginPageState extends State<LoginPage> {
                 );
               },
             ),
-            TextButton(
-              child: Text('Back to Login'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-            ),
           ],
         );
       },
