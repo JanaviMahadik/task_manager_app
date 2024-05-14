@@ -68,37 +68,16 @@ class _LoginPageState extends State<LoginPage> {
           email: usernameController.text,
           password: passwordController.text,
         );
-        showSuccessDialog(context, userCredential.user!.email!);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/', // Route to navigate to
+              (Route<dynamic> route) => false, // Remove all other routes
+        );
       } catch (e) {
         print(e);
         showErrorDialog(context);
       }
     }
-  }
-
-  void showSuccessDialog(BuildContext context, String email) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Success'),
-          content: Text('Successfully logged in as $email'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Go to Main Page'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/', // Route to navigate to
-                      (Route<dynamic> route) => false, // Remove all other routes
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   void showErrorDialog(BuildContext context) {
