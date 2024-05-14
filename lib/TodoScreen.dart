@@ -77,6 +77,9 @@ class _TodoScreenState extends State<TodoScreen> {
                 });
               },
             ),
+            onTap: () {
+              editTask(context, task, _textEditingController);
+            },
             trailing: IconButton(
               icon: Icon(Icons.delete),
               onPressed: () async {
@@ -105,6 +108,7 @@ class _TodoScreenState extends State<TodoScreen> {
                     child: Text('Cancel'),
                     onPressed: () {
                       Navigator.of(context).pop();
+                      _textEditingController.clear();
                     },
                   ),
                   TextButton(
@@ -187,4 +191,64 @@ class TaskSearchDelegate extends SearchDelegate<Task> {
         }
     );
   }
+}
+
+void editTask(BuildContext context, Task task, TextEditingController _textEditingController) {
+  _textEditingController.text = task.title;
+  _textEditingController.selection = TextSelection.fromPosition(
+    TextPosition(offset: _textEditingController.text.length),
+  );
+
+  FocusScope.of(context).requestFocus(FocusNode());
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    builder: (BuildContext context) {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Container(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _textEditingController,
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: 'Edit task...',
+                  border: InputBorder.none,
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    child: Text('Cancel'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  SizedBox(width: 8.0),
+                  TextButton(
+                    child: Text('Save'),
+                    onPressed: () async {
+                      task.title = _textEditingController.text;
+                      await FirebaseFirestore.instance
+                          .collection('tasks')
+                          .doc(task.id)
+                          .update({
+                        'title': task.title,
+                      });
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
