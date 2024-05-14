@@ -10,7 +10,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  bool _secureText = true;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
@@ -31,8 +31,20 @@ class _LoginPageState extends State<LoginPage> {
               ),
               TextFormField(
                 controller: passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
-                obscureText: true,
+                decoration: InputDecoration(
+                    labelText: 'Password',
+                  suffixIcon: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _secureText = !_secureText;
+                      });
+                    },
+                    child: Icon(
+                      _secureText ? Icons.visibility : Icons.visibility_off,
+                    ),
+                ),
+                ),
+                obscureText: _secureText ? true : false,
                 validator: validatePassword,
               ),
               SizedBox(height: 16),
