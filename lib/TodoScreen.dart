@@ -44,7 +44,7 @@ class _TodoScreenState extends State<TodoScreen> {
             DrawerHeader(
               child: Text('Account'),
               decoration: BoxDecoration(
-                color: Colors.blue,
+                  color: Color(0xFFA72F59), // #a72f59
               ),
             ),
             ListTile(
@@ -134,6 +134,7 @@ class _TodoScreenState extends State<TodoScreen> {
           );
         },
         child: Icon(Icons.add),
+        backgroundColor: Color(0xFFA72F59),
       ),
     );
   }
